@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 
 ROOT = Path(__file__).resolve().parent
@@ -127,18 +127,13 @@ def build_preprocessor() -> ColumnTransformer:
     )
 
 
-def densify(matrix):
-    if hasattr(matrix, "toarray"):
-        return matrix.toarray()
-    return matrix
-
-
 def build_model_pipeline(estimator) -> Pipeline:
-    steps = [("encode_sessions", build_preprocessor())]
-    if isinstance(estimator, GaussianNB):
-        steps.append(("to_dense", FunctionTransformer(densify, validate=False)))
-    steps.append(("classifier", estimator))
-    return Pipeline(steps)
+    return Pipeline(
+        [
+            ("encode_sessions", build_preprocessor()),
+            ("classifier", estimator),
+        ]
+    )
 
 
 def score_predictions(y_true, y_pred, y_score) -> dict[str, float]:
