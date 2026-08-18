@@ -30,7 +30,7 @@ Held-out rows used in the app are stored in `test_data.csv`.
 
 ## c. Github Repository Link
 
-**Replace this line after you create the remote repo:** `https://github.com/<your-username>/<your-repo>`
+https://github.com/Krishan14sharma/BITS
 
 ## d. Models used
 
