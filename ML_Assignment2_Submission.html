@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Machine Learning Assignment 2</title>
+  <style>
+    :root {
+      --ink: #1f1f1f;
+      --muted: #5f6368;
+      --line: #c4c7c5;
+      --head: #e8eef7;
+      --win: #eef6e8;
+      --link: #0b57d0;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 860px;
+      padding: 36px 28px 56px;
+      color: var(--ink);
+      font: 16px/1.5 "Times New Roman", Times, serif;
+    }
+    h1 { font-size: 28px; margin: 0 0 6px; }
+    h2 { font-size: 20px; margin: 28px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+    h3 { font-size: 17px; margin: 22px 0 8px; }
+    p, li { margin: 0 0 10px; }
+    .sub { color: var(--muted); font-style: italic; margin-bottom: 22px; }
+    a { color: var(--link); }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 14px; }
+    th, td { border: 1px solid #80868b; padding: 7px 8px; vertical-align: top; text-align: left; }
+    th { background: var(--head); }
+    tr.winner td { background: var(--win); font-weight: 700; }
+    pre {
+      background: #f4f5f6;
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      overflow-x: auto;
+    }
+    @media print {
+      body { max-width: none; padding: 12px; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Machine Learning — Assignment 2</h1>
+  <p class="sub">M.Tech (AIML / DSE) · Work Integrated Learning Programmes Division</p>
+
+  <h2>1. GitHub Repository Link</h2>
+  <p><a href="https://github.com/Krishan14sharma/BITS">https://github.com/Krishan14sharma/BITS</a></p>
+  <p>The repository contains complete source code, <code>requirements.txt</code>, <code>README.md</code>, <code>test_data.csv</code>, and saved model files under <code>model/</code>.</p>
+
+  <h2>2. Live Streamlit App Link</h2>
+  <p><a href="https://mnwkv4k5uy8nkjffp6iw6s.streamlit.app">https://mnwkv4k5uy8nkjffp6iw6s.streamlit.app</a></p>
+  <p>Deployed on Streamlit Community Cloud. The app opens an interactive frontend for test-CSV upload, model selection, evaluation metrics, classification report, and confusion matrix.</p>
+
+  <h2>3. GitHub README content</h2>
+  <p class="sub">Source: <a href="https://github.com/Krishan14sharma/BITS/blob/main/README.md">https://github.com/Krishan14sharma/BITS/blob/main/README.md</a></p>
+
+  <h3>a. Problem statement</h3>
+  <p>E-commerce sites log each visit as a <strong>session</strong>: which pages were opened, how long the visitor stayed, bounce and exit rates, traffic source, and whether the visit happened on a weekend. The business question is binary classification: <strong>will this session end in a purchase?</strong></p>
+  <p>This project trains five classical classifiers on the same session table, reports Accuracy, AUC, Precision, Recall, F1, and Matthews Correlation Coefficient (MCC) on a held-out test split, and exposes the results through a Streamlit app where an evaluator can upload that test CSV and switch models.</p>
+  <p>Positive class = <code>Revenue = True</code> (purchase completed).</p>
+
+  <h3>b. Dataset description</h3>
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Detail</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Name</td><td>Online Shoppers Purchasing Intention</td></tr>
+      <tr><td>Source</td><td>UCI Machine Learning Repository (<a href="https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset">dataset 468</a>)</td></tr>
+      <tr><td>Instances</td><td>12,330 sessions</td></tr>
+      <tr><td>Input features</td><td>17 (10 numeric page/duration/rate features + 7 categorical / coded attributes)</td></tr>
+      <tr><td>Target</td><td><code>Revenue</code> (boolean): purchase vs no purchase</td></tr>
+      <tr><td>Class mix</td><td>About 84.5% no purchase / 15.5% purchase (imbalanced)</td></tr>
+      <tr><td>Split</td><td>Stratified 80/20, <code>random_state=42</code> → 9,864 train / 2,466 test sessions</td></tr>
+    </tbody>
+  </table>
+  <p>Numeric inputs: <code>Administrative</code>, <code>Administrative_Duration</code>, <code>Informational</code>, <code>Informational_Duration</code>, <code>ProductRelated</code>, <code>ProductRelated_Duration</code>, <code>BounceRates</code>, <code>ExitRates</code>, <code>PageValues</code>, <code>SpecialDay</code>.</p>
+  <p>Categorical / coded inputs: <code>Month</code>, <code>OperatingSystems</code>, <code>Browser</code>, <code>Region</code>, <code>TrafficType</code>, <code>VisitorType</code>, <code>Weekend</code>.</p>
+  <p>Preprocessing (shared sklearn <code>Pipeline</code> for every model): <code>StandardScaler</code> on numeric columns and <code>OneHotEncoder(handle_unknown="ignore")</code> on categorical columns. Gaussian Naive Bayes receives a dense encoded matrix. Logistic Regression and tree ensembles use <code>class_weight</code> so the minority purchase class is not ignored.</p>
+  <p>Held-out rows used in the app are stored in <code>test_data.csv</code>.</p>
+
+  <h3>c. Github Repository Link</h3>
+  <p><a href="https://github.com/Krishan14sharma/BITS">https://github.com/Krishan14sharma/BITS</a></p>
+
+  <h3>d. Models used</h3>
+  <p>All five models were trained on the same train split and scored on the same 2,466 test sessions.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>ML Model Name</th>
+        <th>Accuracy</th>
+        <th>AUC</th>
+        <th>Precision</th>
+        <th>Recall</th>
+        <th>F1</th>
+        <th>MCC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Logistic Regression</td>
+        <td>0.8406</td><td>0.8934</td><td>0.4905</td><td>0.7435</td><td>0.5911</td><td>0.5138</td>
+      </tr>
+      <tr>
+        <td>Decision Tree</td>
+        <td>0.8362</td><td>0.9231</td><td>0.4836</td><td>0.8482</td><td>0.6160</td><td>0.5548</td>
+      </tr>
+      <tr>
+        <td>kNN</td>
+        <td>0.8731</td><td>0.8177</td><td>0.6927</td><td>0.3246</td><td>0.4421</td><td>0.4159</td>
+      </tr>
+      <tr>
+        <td>Naive Bayes</td>
+        <td>0.2729</td><td>0.7330</td><td>0.1726</td><td>0.9738</td><td>0.2933</td><td>0.1289</td>
+      </tr>
+      <tr class="winner">
+        <td>Random Forest (Ensemble)</td>
+        <td>0.8678</td><td>0.9183</td><td>0.5522</td><td>0.7749</td><td>0.6449</td><td>0.5787</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Precision, recall, and F1 are for the purchase class. MCC is used as the primary ranking metric because accuracy is inflated by the majority “no purchase” class.</p>
+
+  <h3>Observations on model performance</h3>
+  <table>
+    <thead>
+      <tr><th>ML Model Name</th><th>Observation about model performance</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Logistic Regression</td>
+        <td>Strong linear baseline (AUC 0.89). Balanced class weights lift recall (0.74) at the cost of precision (0.49): it flags many non-buying sessions as purchases. Useful when missing a buyer is more expensive than an extra review.</td>
+      </tr>
+      <tr>
+        <td>Decision Tree</td>
+        <td>Depth capped at 8 with <code>min_samples_leaf=20</code>. Highest AUC (0.923) and high recall (0.85), but precision stays near 0.48, so the tree still over-predicts purchases. MCC (0.55) beats logistic regression because the extra true positives outweigh the extra false positives.</td>
+      </tr>
+      <tr>
+        <td>kNN</td>
+        <td>Distance-weighted 11-NN after scaling. Highest accuracy (0.873) and precision (0.69), but recall collapses to 0.32: neighbours are dominated by the majority class, so many actual purchases are missed. Accuracy is misleading here.</td>
+      </tr>
+      <tr>
+        <td>Naive Bayes</td>
+        <td>GaussianNB on a scaled, one-hot encoded session vector. Independence is a poor fit for correlated page counts and durations. It almost always predicts purchase (recall 0.97, accuracy 0.27, MCC 0.13). Keep it as a weak baseline, not a production model for this table.</td>
+      </tr>
+      <tr>
+        <td>Random Forest (Ensemble)</td>
+        <td>200 trees, depth 12, balanced subsample weights. Best F1 (0.645) and best MCC (0.579), with AUC close to the tree (0.918). It is the most balanced of the five: it still finds most buyers (recall 0.77) without kNN’s missed purchases or Naive Bayes’ flood of false alarms.</td>
+      </tr>
+      <tr class="winner">
+        <td>Overall Winner for your dataset?</td>
+        <td>Random Forest (Ensemble) — highest MCC and F1 on the held-out sessions. Decision Tree is second (slightly higher AUC, weaker precision/F1). Do not pick kNN from accuracy alone.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>How to run locally</h3>
+  <pre>python -m pip install -r requirements.txt
+python train_models.py
+streamlit run app.py</pre>
+  <p>For the BITS Virtual Lab screenshot, open <code>notebooks/train_and_evaluate.ipynb</code> and Run All.</p>
+
+  <h3>Streamlit app</h3>
+  <p>The app (<code>app.py</code>) lets you:</p>
+  <ol>
+    <li>Upload a test CSV (or use bundled <code>test_data.csv</code>)</li>
+    <li>Choose one of the five saved classifiers</li>
+    <li>See Accuracy, AUC, Precision, Recall, F1, and MCC recomputed on that file</li>
+    <li>Inspect a classification report and a confusion-matrix heatmap</li>
+    <li>Compare all five models on the same uploaded sessions</li>
+  </ol>
+</body>
+</html>
